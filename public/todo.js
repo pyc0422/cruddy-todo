@@ -7,6 +7,7 @@ window.Todo = {
 
   // Create (Crud) -- collection
   create: function(text, callback) {
+    //console.log('todo-create-test: ', text);
     return $.ajax({
       url: this.url,
       type: 'POST',
