@@ -22,17 +22,10 @@ exports.create = (text, callback) => {
         callback(null, { id, text});
       }
     });
-
-    //items[id] = text;
-
   });
 };
 
 exports.readAll = (callback) => {
-  // var data = _.map(items, (text, id) => {
-  //   return { id, text };
-  // });
-  // callback(null, data);
   fs.readdir(exports.dataDir, function(err, items) {
     if (err) {
       callback(err);
@@ -44,16 +37,23 @@ exports.readAll = (callback) => {
       callback(null, data);
     }
   });
-
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  // var text = items[id];
+  // if (!text) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   callback(null, { id, text });
+  // }
+  var file = path.join(exports.dataDir, id + '.txt');
+  fs.readFile(file, 'utf8', function(err, content) {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text: content });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
