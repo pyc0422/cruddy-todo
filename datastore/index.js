@@ -57,13 +57,28 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  // var item = items[id];
+  // if (!item) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   items[id] = text;
+  //   callback(null, { id, text });
+  // }
+  var file = path.join(exports.dataDir, id + '.txt');
+  exports.readOne(id, function(err, content) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    fs.writeFile(file, text, content, function(err) {
+      if (err) {
+        callback(new Error(`No item with id: ${id}`));
+      } else {
+        content.text = text;
+        callback(null, content);
+      }
+    });
+  });
 };
 
 exports.delete = (id, callback) => {
