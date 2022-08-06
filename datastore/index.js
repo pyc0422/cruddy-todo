@@ -15,14 +15,18 @@ exports.create = (content, callback) => {
   // console.log(id);
   // items[id] = text;
   // callback(null, { id, text });
+  console.log('index create content: ', content);
   counter.getNextUniqueId((err, id)=>{
     var file = path.join(exports.dataDir, id + '.txt');
-    console.log(content);
-    fs.writeFile(file, JSON.stringify(content), content, (err) => {
+    //console.log('index create content: ', content);
+    var time = content.createTime;
+    var text = content.text;
+    console.log('time and text: ', time +'//' + text);
+    fs.writeFile(file, JSON.stringify(content), 'utf8', (err) => {
       if (err) {
         console.log(err);
       } else {
-        callback(null, { id, text: content.text, creatTime: content.createTime});
+        callback(null, { id, text: text, createTime: time});
       }
     });
   });
@@ -64,7 +68,8 @@ exports.readAll = (callback) => {
             reject(err);
           } else {
             var id = filename.split('.')[0];
-            resolve({id, text: content.text, creatTime: content.createTime});
+            content = JSON.parse(content);
+            resolve({id, text: content.text, createTime: content.createTime});
           }
         });
       });
@@ -73,12 +78,12 @@ exports.readAll = (callback) => {
 };
 
 exports.readOne = (id, callback) => {
-
   var file = path.join(exports.dataDir, id + '.txt');
   fs.readFile(file, 'utf8', function(err, content) {
     if (err) {
       callback(new Error(`No item with id: ${id}`));
     } else {
+      content = JSON.parse(content);
       callback(null, { id, text: content.text, createTime: content.createTime });
     }
   });
