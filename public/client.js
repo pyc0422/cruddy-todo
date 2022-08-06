@@ -4,7 +4,8 @@ $(() => {
 
   var template = _.template(`
     <li data-id="<%=id%>" class="todo">
-      <span><%=text%></span>
+      <span><%=text%><em>-<%=createTime%></span>
+
       <button data-action="edit">edit</button>
       <button data-action="done">&#x2714;</button>
     </li>
@@ -15,6 +16,7 @@ $(() => {
   };
 
   var addTodo = (todo) => {
+    console.log('addtodo todo: ', todo);
     $('#todos').append(renderTodo(todo));
   };
 
@@ -36,8 +38,12 @@ $(() => {
 
   $('#form button').click( (event) => {
     var text = $('#form input').val().trim();
+    var time = new Date();
+    var createTime = time.toLocaleString();
+    var content = {text, createTime};
+    console.logt('submit content: ', content);
     if (text) {
-      Todo.create(text, addTodo);
+      Todo.create( content, addTodo);
     }
     $('#form input').val('');
   });

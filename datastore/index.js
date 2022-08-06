@@ -1,25 +1,28 @@
-const fs = require('fs');
+var Promise = require('bluebird');
 const path = require('path');
 const _ = require('underscore');
-const counter = require('./counter');
+//const counter = require('./counter');
+const counter = Promise.promisifyAll(require('./counter'));
+//const fs = require('fs');
+const fs = Promise.promisifyAll(require('fs'));
 
 var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
-exports.create = (text, callback) => {
+exports.create = (content, callback) => {
   // var id = counter.getNextUniqueId((err, id)=>{ return id; });
   // console.log(id);
   // items[id] = text;
   // callback(null, { id, text });
   counter.getNextUniqueId((err, id)=>{
     var file = path.join(exports.dataDir, id + '.txt');
-    //console.log(typeof text);
-    fs.writeFile(file, text, 'utf8', (err) => {
+    console.log(content);
+    fs.writeFile(file, JSON.stringify(content), content, (err) => {
       if (err) {
         console.log(err);
       } else {
-        callback(null, { id, text});
+        callback(null, { id, text: content.text, creatTime: content.createTime});
       }
     });
   });
@@ -61,7 +64,7 @@ exports.readAll = (callback) => {
             reject(err);
           } else {
             var id = filename.split('.')[0];
-            resolve({id, text: content});
+            resolve({id, text: content.text, creatTime: content.createTime});
           }
         });
       });
@@ -76,7 +79,7 @@ exports.readOne = (id, callback) => {
     if (err) {
       callback(new Error(`No item with id: ${id}`));
     } else {
-      callback(null, { id, text: content });
+      callback(null, { id, text: content.text, createTime: content.createTime });
     }
   });
 };

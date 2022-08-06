@@ -6,13 +6,13 @@ window.Todo = {
   url: '/todo',
 
   // Create (Crud) -- collection
-  create: function(text, callback) {
+  create: function(content, callback) {
     //console.log('todo-create-test: ', text);
     return $.ajax({
       url: this.url,
       type: 'POST',
       dataType: 'json',
-      data: {todoText: text},
+      data: {todoText: content},
       success: callback
     });
   },
